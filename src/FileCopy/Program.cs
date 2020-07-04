@@ -68,7 +68,7 @@ namespace FileCopyNetF
 
                 return true;
             }
-            catch(Exception e)
+            catch(Exception toMakeFalse)
             {
                 return false;
             }
