@@ -39,28 +39,38 @@ namespace FileCopyNetF
             return true;
         }
 
-
-        private static void CopyAndMove(string[] copyAndMoveArgs)
+        private static bool CopyAndMove(string[] copyAndMoveArgs)
         {
-            string[] allFiles = Directory.GetFiles(copyAndMoveArgs[0]);
-            foreach (string filePath in allFiles)
+            try
             {
-                FileInfo file = new FileInfo(filePath);
-                
-                DateTime creationTime = file.CreationTime;
-                string year = creationTime.Year.ToString();
-                string month = creationTime.Month.ToString();
-                string day = creationTime.Day.ToString();
+                string[] allFiles = Directory.GetFiles(copyAndMoveArgs[0]);
 
-                string timeExtension = "\\" + year + "\\" + month + "\\" + day;
-                string newDir = copyAndMoveArgs[1] + timeExtension;
-
-                if (!Directory.Exists(newDir))
+                foreach (string filePath in allFiles)
                 {
-                    Directory.CreateDirectory(newDir);
+                    FileInfo file = new FileInfo(filePath);
+
+                    DateTime creationTime = file.CreationTime;
+                    string year = creationTime.Year.ToString();
+                    string month = creationTime.Month.ToString();
+                    string day = creationTime.Day.ToString();
+
+                    string fileName = Path.GetFileName(filePath);
+                    string timeExtension = "\\" + year + "\\" + month + "\\" + day;
+                    string newFilePath = copyAndMoveArgs[1] + timeExtension + fileName;
+
+                    if (!Directory.Exists(newFilePath))
+                    {
+                        Directory.CreateDirectory(newFilePath);
+                    }
+
+                    File.Copy(filePath, newFilePath);
                 }
 
-                File.Copy(filePath, newDir + ); // second arg is invalid
+                return true;
+            }
+            catch(Exception e)
+            {
+                return false;
             }
         }
     }
