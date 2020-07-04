@@ -1,0 +1,7 @@
+/src/**/objd/**/*
+/src/**/obj/**/*
+/src/**/bin/**/*
+*.suo
+*.sln
+*.user
+.vs/
