@@ -13,7 +13,7 @@ namespace FileCopyNetF
         {
             if (InputValidation(args))
             {
-                CopyAndMove(args);
+                CopyAndMove(args[0], args[1]);
             }
         }
 
@@ -23,6 +23,18 @@ namespace FileCopyNetF
             string dest = inputValArgs[1];
             bool sourceFolderExists = Directory.Exists(source);
             bool destFolderExists = Directory.Exists(dest);
+
+            if (inputValArgs.Length < 2)
+            {
+                Console.WriteLine("Entered too few arguments. Please try again.");
+                return false;
+            }
+
+            if (inputValArgs.Length > 2)
+            {
+                Console.WriteLine("Too many arguments were passed. Please try again.");
+                return false;
+            }
 
             if (!sourceFolderExists)
             {
@@ -36,14 +48,15 @@ namespace FileCopyNetF
                 Console.WriteLine("Error: The destination directory is not valid. Please try again");
                 return false;
             }
+
             return true;
         }
 
-        private static bool CopyAndMove(string[] copyAndMoveArgs)
+        private static bool CopyAndMove(string source, string destination)
         {
             try
             {
-                string[] allFiles = Directory.GetFiles(copyAndMoveArgs[0]);
+                string[] allFiles = Directory.GetFiles(source);
 
                 foreach (string filePath in allFiles)
                 {
@@ -55,12 +68,15 @@ namespace FileCopyNetF
                     string day = creationTime.Day.ToString();
 
                     string fileName = Path.GetFileName(filePath);
-                    string timeExtension = "\\" + year + "\\" + month + "\\" + day;
-                    string newFilePath = copyAndMoveArgs[1] + timeExtension + fileName;
+                    string timeExtension = "\\" + year + "\\" + month + "\\" + day + "\\";
+                    string newDirPath = destination + timeExtension;
+                    string newFilePath = newDirPath + fileName;
 
-                    if (!Directory.Exists(newFilePath))
+                    string timeExtension1 = Path.Combine(year, month, day);
+
+                    if (!Directory.Exists(newDirPath))
                     {
-                        Directory.CreateDirectory(newFilePath);
+                        Directory.CreateDirectory(newDirPath);
                     }
 
                     File.Copy(filePath, newFilePath);
