@@ -1,22 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-
+﻿//-----------------------------------------------------------------------------------
+// <copyright company="Anirudh Indraganti" file="Program.cs">
+//      Copyright ©️ Anirudh Indraganti. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------------------
 namespace FileCopyNetF
 {
-    class Program
+    using System;
+    using System.IO;
+
+    /// <summary>
+    /// Class containing entry point into the program
+    /// </summary>
+    public class Program
     {
-        static void Main(string[] args)
+        /// <summary>
+        /// Entry point into the program
+        /// </summary>
+        /// <param name="args">Command line parameters</param>
+        public static void Main(string[] args)
         {
             if (InputValidation(args))
             {
                 CopyAndMove(args[0], args[1]);
             }
-        }
+        }    
 
+        /// <summary>
+        /// Entry into the input validation
+        /// </summary>
+        /// <param name="inputValArgs"> Command line arguments </param>
+        /// <returns> a boolean of whether the validation passed </returns>
         private static bool InputValidation(string[] inputValArgs)
         {
             string source = inputValArgs[0];
@@ -42,7 +55,6 @@ namespace FileCopyNetF
                 return false;
             }
 
-
             if (!destFolderExists)
             {
                 Console.WriteLine("Error: The destination directory is not valid. Please try again");
@@ -52,6 +64,12 @@ namespace FileCopyNetF
             return true;
         }
 
+        /// <summary>
+        /// Entry into the point where the files in the source folder will be copied and moved
+        /// </summary>
+        /// <param name="source"> the source folder path </param>
+        /// <param name="destination"> the destination folder path </param>
+        /// <returns> a boolean that determines if an exception was thrown in the process of method execution </returns>
         private static bool CopyAndMove(string source, string destination)
         {
             try
@@ -67,12 +85,20 @@ namespace FileCopyNetF
                     string month = creationTime.Month.ToString();
                     string day = creationTime.Day.ToString();
 
-                    string fileName = Path.GetFileName(filePath);
-                    string timeExtension = "\\" + year + "\\" + month + "\\" + day + "\\";
-                    string newDirPath = destination + timeExtension;
-                    string newFilePath = newDirPath + fileName;
+                    if (month.Length == 1)
+                    {
+                        month = "0" + month;
+                    }
 
-                    string timeExtension1 = Path.Combine(year, month, day);
+                    if (day.Length == 1)
+                    {
+                        day = "0" + day;
+                    }
+
+                    string fileName = Path.GetFileName(filePath);
+                    string timeExtension = Path.Combine(year, month, day);
+                    string newDirPath = Path.Combine(destination, timeExtension);
+                    string newFilePath = Path.Combine(newDirPath, fileName);
 
                     if (!Directory.Exists(newDirPath))
                     {
@@ -84,8 +110,9 @@ namespace FileCopyNetF
 
                 return true;
             }
-            catch(Exception toMakeFalse)
+            catch (Exception toMakeFalse)
             {
+                Console.WriteLine(toMakeFalse.ToString());
                 return false;
             }
         }
