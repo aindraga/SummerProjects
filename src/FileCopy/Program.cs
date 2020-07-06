@@ -34,8 +34,6 @@ namespace FileCopyNetF
         {
             string source = inputValArgs[0];
             string dest = inputValArgs[1];
-            bool sourceFolderExists = Directory.Exists(source);
-            bool destFolderExists = Directory.Exists(dest);
 
             if (inputValArgs.Length < 2)
             {
@@ -48,6 +46,9 @@ namespace FileCopyNetF
                 Console.WriteLine("Too many arguments were passed. Please try again.");
                 return false;
             }
+
+            bool sourceFolderExists = Directory.Exists(source);
+            bool destFolderExists = Directory.Exists(dest);
 
             if (!sourceFolderExists)
             {
