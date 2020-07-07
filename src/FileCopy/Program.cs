@@ -75,7 +75,7 @@ namespace FileCopyNetF
         {
             try
             {
-                string[] allFiles = Directory.GetFiles(source);
+                string[] allFiles = Directory.GetFiles(source, "*", SearchOption.AllDirectories);
 
                 foreach (string filePath in allFiles)
                 {
