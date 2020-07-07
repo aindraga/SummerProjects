@@ -32,9 +32,6 @@ namespace FileCopyNetF
         /// <returns> a boolean of whether the validation passed </returns>
         private static bool InputValidation(string[] inputValArgs)
         {
-            string source = inputValArgs[0];
-            string dest = inputValArgs[1];
-
             if (inputValArgs.Length < 2)
             {
                 Console.WriteLine("Entered too few arguments. Please try again.");
@@ -46,6 +43,9 @@ namespace FileCopyNetF
                 Console.WriteLine("Too many arguments were passed. Please try again.");
                 return false;
             }
+
+            string source = inputValArgs[0];
+            string dest = inputValArgs[1];
 
             bool sourceFolderExists = Directory.Exists(source);
             bool destFolderExists = Directory.Exists(dest);
