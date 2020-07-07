@@ -1,6 +1,7 @@
 /src/**/objd/**/*
 /src/**/obj/**/*
 /src/**/bin/**/*
+/src/**/StyleCop.cache
 *.suo
 *.sln
 *.user
