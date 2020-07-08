@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿//-----------------------------------------------------------------------------------
+// <copyright company="Anirudh Indraganti" file="Crypto.cs">
+//      Copyright ©️ Anirudh Indraganti. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------------------
 namespace AnirudhCommon
 {
+    using System;
+    using System.IO;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Crypto class that contains methods for multiple uses of SHA256
     /// </summary>
@@ -17,7 +18,7 @@ namespace AnirudhCommon
         /// Gets the hash of a single file
         /// </summary>
         /// <param name="filePath"> pathway of the file user wants to pass in </param>
-        /// <returns> string that contains the hash value if everything worked properlly otherwise null </returns>
+        /// <returns> string that contains the hash value if everything worked properly otherwise null </returns>
         public static string SHA256HashForFile(string filePath)
         {
             bool fileExists = File.Exists(filePath);
@@ -32,7 +33,7 @@ namespace AnirudhCommon
                     {
                         byte[] byteHash = fileSHA256.ComputeHash(fileStream);
                         string bitconversion = BitConverter.ToString(byteHash);
-                        bitconversion = bitconversion.Replace("-", "");
+                        bitconversion = bitconversion.Replace("-", string.Empty);
                         return bitconversion;
                     }
                     catch (Exception toMakeFalse)
@@ -61,15 +62,15 @@ namespace AnirudhCommon
         /// <returns> boolean of whether the files have the same hashes </returns>
         public static bool HashComparison(string filePath1, string filePath2)
         {
-            bool FilePath1Exists = File.Exists(filePath1);
-            bool FilePath2Exists = File.Exists(filePath2);
+            bool filePath1Exists = File.Exists(filePath1);
+            bool filePath2Exists = File.Exists(filePath2);
 
-            if (FilePath1Exists & FilePath2Exists)
+            if (filePath1Exists & filePath2Exists)
             {
-                string Sha256File1 = SHA256HashForFile(filePath1);
-                string Sha256File2 = SHA256HashForFile(filePath2);
+                string sha256File1 = SHA256HashForFile(filePath1);
+                string sha256File2 = SHA256HashForFile(filePath2);
 
-                if (Sha256File1 == Sha256File2)
+                if (sha256File1 == sha256File2)
                 {
                     return true;
                 }
