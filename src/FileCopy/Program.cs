@@ -78,8 +78,9 @@ namespace FileCopyNetF
             {
                 string[] allFiles = Directory.GetFiles(source, "*", SearchOption.AllDirectories);
 
-                foreach (string filePath in allFiles)
+                for (int i = 0; i < allFiles.Length; i++)
                 {
+                    string filePath = allFiles[i];
                     FileInfo file = new FileInfo(filePath);
 
                     DateTime creationTime = file.CreationTime;
