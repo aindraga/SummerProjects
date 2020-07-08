@@ -120,7 +120,6 @@ namespace FileCopyNetF
 
                 return true;
             }
-
             catch (Exception toMakeFalse)
             {
                 Console.WriteLine(toMakeFalse.ToString());
