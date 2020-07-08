@@ -45,5 +45,11 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AnirudhCommon\AnirudhCommon.csproj">
+      <Project>{f373d3df-74f2-4419-9401-4dd73be3a401}</Project>
+      <Name>AnirudhCommon</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
