@@ -7,6 +7,9 @@ namespace FileCopyNetF
 {
     using System;
     using System.IO;
+    using System.Security.Cryptography;
+    using System.Text;
+    using AnirudhCommon;
 
     /// <summary>
     /// Class containing entry point into the program
@@ -19,11 +22,11 @@ namespace FileCopyNetF
         /// <param name="args">Command line parameters</param>
         public static void Main(string[] args)
         {
-            if (InputValidation(args))
+           if (InputValidation(args))
             {
                 CopyAndMove(args[0], args[1]);
             }
-        }    
+        }
 
         /// <summary>
         /// Entry into the input validation
@@ -107,10 +110,17 @@ namespace FileCopyNetF
                     }
 
                     File.Copy(filePath, newFilePath);
+
+                    if (!Crypto.HashComparison(filePath, newFilePath))
+                    {
+                        Console.WriteLine("The hashes are not similar. Something went wrong in the copy process");
+                        return false;
+                    }
                 }
 
                 return true;
             }
+
             catch (Exception toMakeFalse)
             {
                 Console.WriteLine(toMakeFalse.ToString());
@@ -118,4 +128,4 @@ namespace FileCopyNetF
             }
         }
     }
-} 
+}
