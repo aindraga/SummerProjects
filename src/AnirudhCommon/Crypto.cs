@@ -7,6 +7,7 @@ namespace AnirudhCommon
 {
     using System;
     using System.IO;
+    using System.Runtime.Remoting.Channels;
     using System.Security.Cryptography;
 
     /// <summary>
@@ -22,13 +23,16 @@ namespace AnirudhCommon
         public static string SHA256HashForFile(string filePath)
         {
             bool fileExists = File.Exists(filePath);
+
             if (fileExists == true)
             {
                 FileInfo fileInfo = new FileInfo(filePath);
+
                 using (SHA256 fileSHA256 = SHA256.Create())
                 {
                     FileStream fileStream = fileInfo.Open(FileMode.Open);
                     fileStream.Position = 0;
+
                     try
                     {
                         byte[] byteHash = fileSHA256.ComputeHash(fileStream);
@@ -65,22 +69,73 @@ namespace AnirudhCommon
             bool filePath1Exists = File.Exists(filePath1);
             bool filePath2Exists = File.Exists(filePath2);
 
-            if (filePath1Exists & filePath2Exists)
+            if (filePath1Exists && filePath2Exists)
             {
                 string sha256File1 = SHA256HashForFile(filePath1);
                 string sha256File2 = SHA256HashForFile(filePath2);
 
                 if (sha256File1 == sha256File2)
                 {
+                    Console.WriteLine(filePath1 + ": " + sha256File1 + "|| " + filePath2 + ": " + sha256File2);
                     return true;
                 }
 
-                Console.WriteLine("Not the same file");
+                Console.WriteLine("Not the same file:");
+                Console.WriteLine(filePath1 + ": " + sha256File1 + "|| " + filePath2 + ": " + sha256File2);
                 return false;
-             }
+            }
 
-            Console.WriteLine("One of the file paths is invalid");
-            return false;
+            else
+            {
+                if (!filePath1Exists)
+                {
+                    Console.WriteLine("The first path does not exist");
+                    return false;
+                }
+
+                if (!filePath2Exists)
+                {
+                    Console.WriteLine("The second path does not exist");
+                    return false;
+                }
+
+                return true;
             }
         }
- }
+
+        public static string SHA256ThoughWriteLocked(string filepath)
+        {
+            bool fileExists = File.Exists(filepath);
+
+            if (fileExists)
+            {
+                using (SHA256 fileSHA256 = SHA256.Create())
+                {
+                    using (FileStream fileStream = new FileStream(filepath, FileMode.Open, FileAccess.Write, FileShare.Write))
+                    {
+                        fileStream.Position = 0;
+                        try
+                        {
+                            byte[] byteHash = fileSHA256.ComputeHash(fileStream);
+                            string bitconversion = BitConverter.ToString(byteHash);
+                            bitconversion = bitconversion.Replace("-", string.Empty);
+                            return bitconversion;
+                        }
+                        catch (Exception toMakeFalse)
+                        {
+                            Console.WriteLine(toMakeFalse.ToString());
+                            return null;
+                        }
+                        finally
+                        {
+                            fileStream.Close();
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine("File does not exist");
+            return null;
+        }
+    }
+}
