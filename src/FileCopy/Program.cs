@@ -20,10 +20,7 @@ namespace FileCopyNetF
         /// <param name="args">Command line parameters</param>
         public static void Main(string[] args)
         {
-           if (InputValidation(args))
-            {
-                CopyAndMove(args[0], args[1]);
-            }
+            Crypto.SHA256ThoughWriteLocked(args[0]);
         }
 
         /// <summary>
