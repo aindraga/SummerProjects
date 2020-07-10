@@ -20,36 +20,15 @@ namespace AnirudhCommon
         /// </summary>
         /// <param name="filePath"> pathway of the file user wants to pass in </param>
         /// <returns> string that contains the hash value if everything worked properly otherwise null </returns>
-        public static string SHA256HashForFile(string filePath)
+        public static string SHA256Clean(string filePath)
         {
             bool fileExists = File.Exists(filePath);
 
-            if (fileExists == true)
+            if (fileExists)
             {
-                FileInfo fileInfo = new FileInfo(filePath);
-
-                using (SHA256 fileSHA256 = SHA256.Create())
-                {
-                    FileStream fileStream = fileInfo.Open(FileMode.Open);
-                    fileStream.Position = 0;
-
-                    try
-                    {
-                        byte[] byteHash = fileSHA256.ComputeHash(fileStream);
-                        string bitconversion = BitConverter.ToString(byteHash);
-                        bitconversion = bitconversion.Replace("-", string.Empty);
-                        return bitconversion;
-                    }
-                    catch (Exception toMakeFalse)
-                    {
-                        Console.WriteLine(toMakeFalse.ToString());
-                        return null;
-                    }
-                    finally
-                    {
-                        fileStream.Close();
-                    }
-                }
+                FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                string hash = GetSHA(fileStream);
+                return hash;
             }
             else
             {
@@ -71,8 +50,18 @@ namespace AnirudhCommon
 
             if (filePath1Exists && filePath2Exists)
             {
-                string sha256File1 = SHA256HashForFile(filePath1);
-                string sha256File2 = SHA256HashForFile(filePath2);
+                string sha256File1 = SHA256Clean(filePath1);
+                string sha256File2 = SHA256Clean(filePath2);
+
+                if (sha256File1 == null)
+                {
+                    sha256File1 = SHA256Dirty(sha256File1);
+                }
+
+                if (sha256File2 == null)
+                {
+                    sha256File2 = SHA256Dirty(sha256File2);
+                }
 
                 if (sha256File1 == sha256File2)
                 {
@@ -103,39 +92,45 @@ namespace AnirudhCommon
             }
         }
 
-        public static string SHA256ThoughWriteLocked(string filepath)
+        public static string SHA256Dirty(string filepath)
         {
             bool fileExists = File.Exists(filepath);
 
             if (fileExists)
             {
-                using (SHA256 fileSHA256 = SHA256.Create())
-                {
-                    using (FileStream fileStream = new FileStream(filepath, FileMode.Open, FileAccess.Write, FileShare.Write))
-                    {
-                        fileStream.Position = 0;
-                        try
-                        {
-                            byte[] byteHash = fileSHA256.ComputeHash(fileStream);
-                            string bitconversion = BitConverter.ToString(byteHash);
-                            bitconversion = bitconversion.Replace("-", string.Empty);
-                            return bitconversion;
-                        }
-                        catch (Exception toMakeFalse)
-                        {
-                            Console.WriteLine(toMakeFalse.ToString());
-                            return null;
-                        }
-                        finally
-                        {
-                            fileStream.Close();
-                        }
-                    }
-                }
+                FileStream fileStream = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                string hash = GetSHA(fileStream);
+                return hash;
             }
 
             Console.WriteLine("File does not exist");
             return null;
+        }
+
+        private static string GetSHA(FileStream fileStream)
+        {
+            using (SHA256 fileSHA256 = SHA256.Create())
+            {
+                using (fileStream)
+                {
+                    try
+                    {
+                        byte[] byteHash = fileSHA256.ComputeHash(fileStream);
+                        string bitconversion = BitConverter.ToString(byteHash);
+                        bitconversion = bitconversion.Replace("-", string.Empty);
+                        return bitconversion;
+                    }
+                    catch (Exception toMakeFalse)
+                    {
+                        Console.WriteLine(toMakeFalse.ToString());
+                        return null;
+                    }
+                    finally
+                    {
+                        fileStream.Close();
+                    }
+                }
+            }
         }
     }
 }
