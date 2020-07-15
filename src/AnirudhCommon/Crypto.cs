@@ -7,8 +7,8 @@ namespace AnirudhCommon
 {
     using System;
     using System.IO;
-    using System.Runtime.Remoting.Channels;
     using System.Security.Cryptography;
+    using System.Text;
 
     /// <summary>
     /// Crypto class that contains methods for multiple uses of SHA256
@@ -53,16 +53,6 @@ namespace AnirudhCommon
                 string sha256File1 = SHA256Clean(filePath1);
                 string sha256File2 = SHA256Clean(filePath2);
 
-                if (sha256File1 == null)
-                {
-                    sha256File1 = SHA256Dirty(sha256File1);
-                }
-
-                if (sha256File2 == null)
-                {
-                    sha256File2 = SHA256Dirty(sha256File2);
-                }
-
                 if (sha256File1 == sha256File2)
                 {
                     Console.WriteLine(filePath1 + ": " + sha256File1 + "|| " + filePath2 + ": " + sha256File2);
@@ -73,7 +63,6 @@ namespace AnirudhCommon
                 Console.WriteLine(filePath1 + ": " + sha256File1 + "|| " + filePath2 + ": " + sha256File2);
                 return false;
             }
-
             else
             {
                 if (!filePath1Exists)
@@ -92,6 +81,11 @@ namespace AnirudhCommon
             }
         }
 
+        /// <summary>
+        /// Getting SHA if file is locked for writing
+        /// </summary>
+        /// <param name="filepath"> pathway of file for SHA </param>
+        /// <returns> returns SHA if file is locked for writing otherwise null </returns>
         public static string SHA256Dirty(string filepath)
         {
             bool fileExists = File.Exists(filepath);
@@ -107,6 +101,11 @@ namespace AnirudhCommon
             return null;
         }
 
+        /// <summary>
+        /// Gets SHA given a file stream object
+        /// </summary>
+        /// <param name="fileStream"> file stream to find SHA for </param>
+        /// <returns> SHA value if no exception is thrown otherwise null </returns>
         private static string GetSHA(FileStream fileStream)
         {
             using (SHA256 fileSHA256 = SHA256.Create())
