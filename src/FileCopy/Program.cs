@@ -20,10 +20,8 @@ namespace FileCopyNetF
         /// <param name="args">Command line parameters</param>
         public static void Main(string[] args)
         {
-            if (InputValidation(args))
-            {
-                CopyAndMove(args[0], args[1]);
-            }
+            //Serial.Serialzation(args[0]);
+            Serial.Deserialization(args[0]);
         }
 
         /// <summary>
@@ -76,6 +74,8 @@ namespace FileCopyNetF
         {
             try
             {
+                FileStates filestate = new FileStates();
+                FileStates.DeSerialize(jsonpath);
                 string[] allFiles = Directory.GetFiles(source, "*", SearchOption.AllDirectories);
 
                 for (int i = 0; i < allFiles.Length; i++)
@@ -115,8 +115,10 @@ namespace FileCopyNetF
                         Console.WriteLine("The hashes are not similar. Something went wrong in the copy process");
                         return false;
                     }
-                }
 
+                    filestate.copiedFiles = filePath;
+                    FileStates.Serialize(filestate, );
+                }
                 return true;
             }
             catch (Exception toMakeFalse)
