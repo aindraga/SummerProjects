@@ -24,7 +24,7 @@ namespace AnirudhCommon
         }
 
         /// <summary>
-        /// Gets the files that were copied in run time process
+        /// Gets or sets the files that were copied in run time process
         /// </summary>
         public HashSet<string> CopiedFiles { get; set; }
 
