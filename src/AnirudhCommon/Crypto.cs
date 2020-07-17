@@ -8,7 +8,6 @@ namespace AnirudhCommon
     using System;
     using System.IO;
     using System.Security.Cryptography;
-    using System.Text;
 
     /// <summary>
     /// Crypto class that contains methods for multiple uses of SHA256
