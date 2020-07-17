@@ -76,14 +76,18 @@ namespace FileCopyNetF
                 }
                 catch (IOException)
                 {
-                    Console.WriteLine("The file: " + filePath + " was not able to be copied");
+                    if (!Crypto.HashComparison(filePath, newFilePath))
+                    {
+                        Console.WriteLine("The hashes are not similar. Something went wrong in the copy process");
+                    }
+
                     continue;
                 }
 
                 if (!Crypto.HashComparison(filePath, newFilePath))
                 {
                     Console.WriteLine("The hashes are not similar. Something went wrong in the copy process");
-                    return false;
+                    continue;
                 }
             }
 
