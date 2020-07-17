@@ -54,12 +54,12 @@ namespace AnirudhCommon
 
                 if (sha256File1 == sha256File2)
                 {
-                    Console.WriteLine(filePath1 + ": " + sha256File1 + "|| " + filePath2 + ": " + sha256File2);
+                    Console.WriteLine(filePath1 + ": " + sha256File1 + " || " + filePath2 + ": " + sha256File2);
                     return true;
                 }
 
                 Console.WriteLine("Not the same file:");
-                Console.WriteLine(filePath1 + ": " + sha256File1 + "|| " + filePath2 + ": " + sha256File2);
+                Console.WriteLine(filePath1 + ": " + sha256File1 + " || " + filePath2 + ": " + sha256File2);
                 return false;
             }
             else
