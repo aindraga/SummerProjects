@@ -44,9 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileStates.cs" />
     <Compile Include="PersonDetails.cs" />
     <Compile Include="Serial.cs" />
     <Compile Include="Crypto.cs" />
+    <Compile Include="Validation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
