@@ -1,0 +1,16 @@
+using System;
+using System.IO;
+using System.Diagnostics;
+
+public static void Run(TimerInfo myTimer, ILogger log)
+{
+    using (Process p = new Process())
+    {
+        p.StartInfo.FileName = Path.Combine(@"C:\home\site\wwwroot\stocksttf", "StockTickerProj.exe");
+        p.StartInfo.Arguments = Path.Combine(@"C:\home\site\wwwroot\stocksttf", "Tickers.txt");
+        p.Start();
+        p.WaitForExit();
+    }
+    
+    log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
+}
