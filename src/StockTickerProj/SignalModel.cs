@@ -6,7 +6,6 @@
 
 namespace CallRestAPI
 {
-    using System.Collections.Generic;
     using Newtonsoft.Json.Linq;
     /// <summary>
     /// Class that creates a model for the called data to be stored in.

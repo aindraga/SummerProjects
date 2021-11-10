@@ -24,7 +24,7 @@ namespace CallRestAPI
         public static async Task<string> TickerInfo(string ticker)
         {
             ticker = ticker.ToUpper();
-            string url = $"https://finnhub.io/api/v1/scan/technical-indicator?symbol={ ticker }&resolution=D&token=bscdcsnrh5rfbrs0tfdg";
+            string url = $"https://finnhub.io/api/v1/scan/technical-indicator?symbol={ ticker }&resolution=D&token=API_TOKEN";
 
             using (HttpResponseMessage response = await StockAPIHelper.ApiClient.GetAsync(url))
             {
@@ -79,7 +79,7 @@ namespace CallRestAPI
                 "Initial Catalog=ProjectsDB;" +
                 "Persist Security Info=False;" +
                 "User ID=aindraga;" +
-                "Password=@tECY3paQze2zm4mOP5%x9^^c#vlz4;" +
+                "Password=PASSWORD;" +
                 "MultipleActiveResultSets=False;" +
                 "Encrypt=True;" +
                 "TrustServerCertificate=False;" +
