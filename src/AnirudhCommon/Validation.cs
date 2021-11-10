@@ -35,16 +35,13 @@ namespace AnirudhCommon
             string source = inputValArgs[0];
             string dest = inputValArgs[1];
 
-            bool sourceFolderExists = Directory.Exists(source);
-            bool destFolderExists = Directory.Exists(dest);
-
-            if (!sourceFolderExists)
+            if (!Directory.Exists(source))
             {
                 Console.WriteLine("Error: There is an issue with your source input. Please try again.");
                 return false;
             }
 
-            if (!destFolderExists)
+            if (!Directory.Exists(dest))
             {
                 Console.WriteLine("Error: The destination directory is not valid. Please try again");
                 return false;
