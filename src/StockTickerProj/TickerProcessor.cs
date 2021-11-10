@@ -6,24 +6,43 @@
 namespace CallRestAPI
 {
     using System;
-    using System.Collections.Generic;
     using System.Data.SqlClient;
     using System.IO;
     using System.Net.Http;
     using System.Threading.Tasks;
-    using AnirudhCommon;
-
+    
     /// <summary>
-    /// class for calling REST API and processing data
+    /// Class that contains the data processing methods
     /// </summary>
     public class TickerProcessor
     {
         /// <summary>
-        /// Method that calls the API and retrieves data from a specific ticker
+        /// Method for calling the REST API and assigning the needed data to TickerModel variables
         /// </summary>
-        /// <param name="ticker"> ticker that user wants price for </param>
-        /// <returns> TickerModel object that contains the ticker's current price </returns>
-        public static async Task<TickerModel> TickerInfo(string ticker)
+        /// <param name="ticker">tickers contained in the .txt file</param>
+        /// <returns>a TickerModel object if the response is a success, otherwise it returns null.</returns>
+        public static async Task<string> TickerInfo(string ticker)
+        {
+            ticker = ticker.ToUpper();
+            string url = $"https://finnhub.io/api/v1/scan/technical-indicator?symbol={ ticker }&resolution=D&token=bscdcsnrh5rfbrs0tfdg";
+
+            using (HttpResponseMessage response = await StockAPIHelper.ApiClient.GetAsync(url))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    SignalModel myModel = await response.Content.ReadAsAsync<SignalModel>();
+                    string content = myModel.technicalAnalysis["signal"].ToString();
+                    return content;
+                }
+                else
+                {
+                    Console.WriteLine("The API was uncallable.");
+                    return null;
+                }
+            }
+        }
+
+        public static async Task<QuoteModel> QuoteInfo(string ticker)
         {
             ticker = ticker.ToUpper();
             string url = $"https://finnhub.io/api/v1/quote?symbol={ ticker }&token=bscdcsnrh5rfbrs0tfdg";
@@ -32,7 +51,7 @@ namespace CallRestAPI
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    TickerModel myModel = await response.Content.ReadAsAsync<TickerModel>();
+                    QuoteModel myModel = await response.Content.ReadAsAsync<QuoteModel>();
                     return myModel;
                 }
                 else
@@ -44,45 +63,59 @@ namespace CallRestAPI
         }
 
         /// <summary>
-        /// Method for processing a file of tickers and getting their current prices
+        /// A method that loops through the tickers and calls the REST API and writes the data to an SQL table.
         /// </summary>
-        /// <param name="jsonPath"> pathway of the file containing all tickers </param>
-        /// <returns> a boolean that indicates if the process succeeded </returns>
-        public static bool TickerListResults(string jsonPath)
+        /// <param name="filepath">.txt file path that contains the tickers</param>
+        /// <returns>a boolean indicating whether the above process succeeded or failed.</returns>
+        public static bool TickerListResults(string filepath)
         {
-            if (!File.Exists(jsonPath))
+            if (!File.Exists(filepath))
             {
                 Console.WriteLine("The file does not exist");
                 return false;
             }
 
-            string connectionString = "Server = tcp:tickertest.database.windows.net,1433; " +
-                "Initial Catalog = TickerData; " +
-                "Persist Security Info = False; " +
-                "User ID = pqknyrbqdseamzbhrpeg; " +
-                "Password = YAS6N%8t%amK78W^Z5myH@W&@^9XP9; " +
-                "MultipleActiveResultSets = False; " +
-                "Encrypt = True; " +
-                "TrustServerCertificate = False; " +
-                "Connection Timeout = 30";
+            string connectionString = "Server=tcp:annuserver.database.windows.net,1433;" +
+                "Initial Catalog=ProjectsDB;" +
+                "Persist Security Info=False;" +
+                "User ID=aindraga;" +
+                "Password=@tECY3paQze2zm4mOP5%x9^^c#vlz4;" +
+                "MultipleActiveResultSets=False;" +
+                "Encrypt=True;" +
+                "TrustServerCertificate=False;" +
+                "Connection Timeout=30;";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-                FileStates allTickers = new FileStates();
-                allTickers.DeSerialize(jsonPath);
-                HashSet<string> tickerSet = allTickers.CopiedFiles;
-                DateTime dateRunTime = DateTime.Now;
-
-                foreach (string ticker in tickerSet)
+                try 
+                { 
+                    connection.Open(); 
+                }
+                catch (SqlException)
                 {
-                    string validatedTicker = ticker.ToUpper();
-                    TickerModel tickerInfo = TickerInfo(validatedTicker).Result;
-                    SqlCommand command = new SqlCommand("INSERT INTO TickerSharePrices (Ticker, SharePrice, DateSharePrice) " +
-                                                        "Values ('" + validatedTicker + "'," + tickerInfo.c + ", " + "'" +
-                                                        dateRunTime.ToString("o") + "'" + ")", connection);
+                    Console.WriteLine("There was an issue connecting to the SQL server. Please try again.");
+                    connection.Close();
+                    return false;
+                }
+
+                string[] allTickers = InputValidation.FileValidation(filepath);
+                DateTimeOffset dateNow = DateTimeOffset.Now;
+                string dateRunTime = dateNow.Month.ToString() + "/" + dateNow.Day.ToString() + "/" + dateNow.Year.ToString();
+
+                for (int i = 0; i < allTickers.Length; i++)
+                {
+                    string tickerInfo = TickerInfo(allTickers[i]).Result;
+                    QuoteModel quoteInfo = QuoteInfo(allTickers[i]).Result;
+                    string query = $"INSERT INTO TickerDataTable (tickers, share_price, buy_signal, run_date)" +
+                        $" VALUES ('{allTickers[i]}', '{quoteInfo.c}', '{tickerInfo}', '{dateRunTime}')";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+                                                        
+
                     command.ExecuteNonQuery();
                 }
+
+                connection.Close();
             }
 
             return true;

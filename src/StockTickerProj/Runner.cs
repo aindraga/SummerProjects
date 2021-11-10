@@ -5,15 +5,16 @@
 //-----------------------------------------------------------------------------------
 namespace CallRestAPI
 {
+    using System;
     /// <summary>
-    /// Class that calls the methods to execute the program
+    /// Class that calls and runs the methods
     /// </summary>
     public class Runner
     {
         /// <summary>
-        /// Main method that calls the methods to run the program
+        /// Main method that runs all the methods
         /// </summary>
-        /// <param name="args"></param>
+        /// <param name="args">the .txt file pathway passed</param>
         public static void Main(string[] args)
         {
             if (StockAPIHelper.InitializeClient() && InputValidation.Validation(args))

@@ -3,16 +3,19 @@
 //      Copyright ©️ Anirudh Indraganti. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------------------
+
 namespace CallRestAPI
 {
+    using System.Collections.Generic;
+    using Newtonsoft.Json.Linq;
     /// <summary>
-    /// Class that TickerProcessor class assigns the data to this class
+    /// Class that creates a model for the called data to be stored in.
     /// </summary>
-    public class TickerModel
+    public class SignalModel
     {
         /// <summary>
-        /// Gets or sets the current price of a ticker
+        /// Gets or sets a string of the buy/sell signal of multiple indicators 
         /// </summary>
-        public string c { get; set; }
+        public JObject technicalAnalysis { get; set; }
     }
 }

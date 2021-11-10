@@ -14,14 +14,14 @@ namespace CallRestAPI
     public static class StockAPIHelper
     {
         /// <summary>
-        /// Gets or sets an HttpClient object for the whole application
+        /// Gets or sets HttpClient for API calls
         /// </summary>
         public static HttpClient ApiClient { get; set; }
 
         /// <summary>
-        /// Initializes the HttpClient
+        /// Initializes to HttpClient
         /// </summary>
-        /// <returns> a boolean indicating if the process was successful </returns>
+        /// <returns>a boolean indicating if the process succeeded</returns>
         public static bool InitializeClient()
         {
             if (ApiClient == null)

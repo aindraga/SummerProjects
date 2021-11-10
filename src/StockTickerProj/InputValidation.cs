@@ -10,15 +10,15 @@ namespace CallRestAPI
     using System.IO;
 
     /// <summary>
-    /// Class for validating user input
+    /// Input Validation class that contains two methods
     /// </summary>
     public class InputValidation
     {
         /// <summary>
-        /// Method for validating user input
+        /// Parses args and checks file path existence
         /// </summary>
-        /// <param name="validateArgs"> string array of inputs that are being validated </param>
-        /// <returns> a boolean that indicates if the validation passed </returns>
+        /// <param name="validateArgs">string array that contains the .txt file path argument</param>
+        /// <returns>a boolean indicating if the validation was successful</returns>
         public static bool Validation(string[] validateArgs)
         {
             if (validateArgs.Length > 1)
@@ -38,7 +38,7 @@ namespace CallRestAPI
                 FileInfo fileInfo = new FileInfo(validateArgs[0]);
                 string extension = fileInfo.Extension;
 
-                if (extension == ".json")
+                if (extension == ".txt")
                 {
                     return true;
                 }
@@ -46,7 +46,24 @@ namespace CallRestAPI
                 return false;
             }
 
-            return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the .txt file and reads all lines to a string array
+        /// </summary>
+        /// <param name="filepath">.txt file path</param>
+        /// <returns>Array of all parsed tickers</returns>
+        public static string[] FileValidation(string filepath)
+        {
+            string[] allTickers = File.ReadAllLines(filepath);
+
+            for (int i = 0; i < allTickers.Length; i++)
+            {
+                allTickers[i] = allTickers[i].ToUpper();
+            }
+
+            return allTickers;
         }
     }
 }
