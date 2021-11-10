@@ -91,10 +91,9 @@ namespace CallRestAPI
                 { 
                     connection.Open(); 
                 }
-                catch (SqlException)
+                catch (Exception message)
                 {
-                    Console.WriteLine("There was an issue connecting to the SQL server. Please try again.");
-                    connection.Close();
+                    Console.WriteLine(message.Message);
                     return false;
                 }
 
@@ -106,18 +105,15 @@ namespace CallRestAPI
                 {
                     string tickerInfo = TickerInfo(allTickers[i]).Result;
                     QuoteModel quoteInfo = QuoteInfo(allTickers[i]).Result;
+
                     string query = $"INSERT INTO TickerDataTable (tickers, share_price, buy_signal, run_date)" +
                         $" VALUES ('{allTickers[i]}', '{quoteInfo.c}', '{tickerInfo}', '{dateRunTime}')";
 
                     SqlCommand command = new SqlCommand(query, connection);
-                                                        
-
                     command.ExecuteNonQuery();
                 }
-
                 connection.Close();
             }
-
             return true;
         }
     }
